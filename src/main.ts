@@ -14,6 +14,7 @@ async function bootstrap() {
     .setDescription('The Short-Url API description')
     .setVersion('1.0')
     .addTag('short-urls')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

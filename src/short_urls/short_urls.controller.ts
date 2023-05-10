@@ -14,7 +14,7 @@ import {
 import { Request, Response } from 'express';
 import { ShortUrlsService } from './short_urls.service';
 import { ShortUrlDto } from './dto/short-url.dto';
-import { EXPIRED } from 'src/helplers/constant';
+import { EXPIRED } from '../helpers/constant';
 
 @Controller('short-urls')
 export class ShortUrlsController {
@@ -26,8 +26,6 @@ export class ShortUrlsController {
     res.status(HttpStatus.OK).json({ status: HttpStatus.OK, data: result });
   }
 
-  // localhost:3000/short-urls/0Yw5rXd7MM [OK]
-  // localhost:3000/short-urls/vpdbNyn7a2 [EXPIRED]
   @Get(':code')
   async getOne(@Param() params, @Res() res: Response) {
     try {

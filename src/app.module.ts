@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
+
 import { AppService } from './app.service';
+import { AppController } from './app.controller';
 import { ShortUrlsModule } from './short_urls/short_urls.module';
 
 @Module({

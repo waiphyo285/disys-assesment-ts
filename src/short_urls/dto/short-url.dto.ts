@@ -11,7 +11,7 @@ import {
   ValidatorConstraintInterface,
   Validate,
 } from 'class-validator';
-import { Blacklists } from 'src/helplers/constant';
+import { Blacklists } from '../../helpers/constant';
 
 @ValidatorConstraint()
 class hasBlacklistUrl implements ValidatorConstraintInterface {

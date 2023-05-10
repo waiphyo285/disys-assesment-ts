@@ -4,8 +4,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShortUrlEntity } from './short_url.entity';
 import { ShortUrlDto } from './dto/short-url.dto';
-import { EXPIRED } from 'src/helplers/constant';
-import { generateCode } from 'src/helplers';
+
+import { generateCode } from '../helpers/index';
+import { EXPIRED } from '../helpers/constant';
 
 @Injectable()
 export class ShortUrlsService {

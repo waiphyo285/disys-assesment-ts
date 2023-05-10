@@ -1,12 +1,30 @@
 import {
+  IsUrl,
+  IsNumber,
+  IsString,
   IsBoolean,
   IsDateString,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
-  IsString,
-  isURL,
+  ValidationArguments,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+  Validate,
 } from 'class-validator';
+import { Blacklists } from 'src/helplers/constant';
+
+@ValidatorConstraint()
+class hasBlacklistUrl implements ValidatorConstraintInterface {
+  async validate(fullUrl: string, args: ValidationArguments) {
+    // check url is containted in black list!
+    const isValidUrl = !Blacklists.test(fullUrl);
+
+    return isValidUrl;
+  }
+  defaultMessage(args: ValidationArguments) {
+    return `The provided URL can not create a short link`;
+  }
+}
 
 export class ShortUrlDto {
   @IsOptional()
@@ -14,7 +32,8 @@ export class ShortUrlDto {
   id?: number;
 
   @IsNotEmpty()
-  // @isURL()
+  @IsUrl()
+  @Validate(hasBlacklistUrl)
   fullUrl: string;
 
   @IsOptional()

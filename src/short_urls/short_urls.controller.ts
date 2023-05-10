@@ -27,9 +27,9 @@ export class ShortUrlsController {
   }
 
   @Get(':code')
-  async getOne(@Param() params, @Res() res: Response) {
+  async getOne(@Param('code') code: string, @Res() res: Response) {
     try {
-      const result = await this.service.getDataByCode(params.code);
+      const result = await this.service.getDataByCode(code);
 
       if (result === null) throw new NotFoundException();
 
@@ -58,8 +58,8 @@ export class ShortUrlsController {
   }
 
   @Delete(':id')
-  async deleteData(@Param() params, @Res() res: Response) {
-    const result = await this.service.deleteData(params);
+  async deleteData(@Param('id') id: number, @Res() res: Response) {
+    const result = await this.service.deleteData(id);
     res.status(HttpStatus.OK).json({ status: HttpStatus.OK });
   }
 }

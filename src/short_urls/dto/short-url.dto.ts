@@ -11,6 +11,7 @@ import {
   ValidatorConstraintInterface,
   Validate,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import { Blacklists } from '../../helpers/constant';
 
 @ValidatorConstraint()
@@ -31,6 +32,10 @@ export class ShortUrlDto {
   @IsNumber()
   id?: number;
 
+  @ApiProperty({
+    description: 'Enter URL',
+    default: 'https://hello.com/world',
+  })
   @IsNotEmpty()
   @IsUrl()
   @Validate(hasBlacklistUrl)
@@ -48,6 +53,7 @@ export class ShortUrlDto {
   @IsBoolean()
   isExpired?: boolean;
 
+  @ApiProperty()
   @IsOptional()
   @IsDateString()
   expiredAt?: Date;

@@ -44,7 +44,7 @@ export class ShortUrlsService {
     return this.shortUrlRepository.save(data);
   }
 
-  async deleteData(data: ShortUrlDto) {
-    return this.shortUrlRepository.delete(data);
+  async deleteData(id: number) {
+    return this.shortUrlRepository.delete(id);
   }
 }

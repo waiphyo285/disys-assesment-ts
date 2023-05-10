@@ -3,10 +3,13 @@ import { INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
+import { AuthModule } from './../src/auth/auth.module';
 import { ShortUrlsModule } from './../src/short_urls/short_urls.module';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
+  let auth: any;
+  let token: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,16 +24,28 @@ describe('AppController (e2e)', () => {
           autoLoadEntities: true,
           synchronize: true,
         }),
+        AuthModule,
         ShortUrlsModule,
       ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    auth = await request(app.getHttpServer()).post('/auth/login').send({
+      username: 'hellojwt',
+      password: 'worldjwt', // plaintext are just sample usecase
+    });
+
+    token = 'Bearer ' + auth._body.access_token;
   });
 
   it('/short-urls (GET)', () => {
-    return request(app.getHttpServer()).get('/short-urls').expect(200);
+    console.log('Auth', auth._body.access_token);
+    return request(app.getHttpServer())
+      .get('/short-urls')
+      .set('Authorization', token)
+      .expect(200);
   });
 
   it('/short-urls/:code (GET)', () => {
@@ -57,6 +72,7 @@ describe('AppController (e2e)', () => {
     };
     return request(app.getHttpServer())
       .post('/short-urls')
+      .set('Authorization', token)
       .send(mockObj)
       .expect(201);
   });
@@ -69,11 +85,15 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .put('/short-urls')
       .send(mockObj)
+      .set('Authorization', token)
       .expect(200);
   });
 
   it('/short-urls (DELETE)', () => {
-    return request(app.getHttpServer()).delete('/short-urls/1').expect(200);
+    return request(app.getHttpServer())
+      .delete('/short-urls/1')
+      .set('Authorization', token)
+      .expect(200);
   });
 
   afterAll(async () => {

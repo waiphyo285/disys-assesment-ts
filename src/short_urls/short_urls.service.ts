@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Cache, memoryStore } from 'cache-manager';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShortUrlEntity } from './short_url.entity';
 import { ShortUrlDto } from './dto/short-url.dto';
@@ -11,6 +12,7 @@ import { EXPIRED } from '../helpers/constant';
 @Injectable()
 export class ShortUrlsService {
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectRepository(ShortUrlEntity)
     private shortUrlRepository: Repository<ShortUrlEntity>,
   ) {}
@@ -20,16 +22,27 @@ export class ShortUrlsService {
   }
 
   async getDataByCode(code: string): Promise<ShortUrlEntity | any> {
-    const result = await this.shortUrlRepository.findOne({
+    let result: any;
+
+    const checkResult = async (data: any, isCache) => {
+      if (!isCache) await this.cacheManager.set(code, data);
+
+      if (data && data.isExpired)
+        return moment(data.expiredAt).isAfter(new Date()) ? data : EXPIRED;
+
+      return data;
+    };
+
+    result = await this.cacheManager.get(code);
+
+    if (result) return checkResult(result, true);
+
+    result = await this.shortUrlRepository.findOne({
       select: ['id', 'fullUrl', 'hitCount', 'isExpired', 'expiredAt'],
       where: [{ shortCode: code }],
     });
 
-    if (result && result.isExpired) {
-      return moment(result.expiredAt).isAfter(new Date()) ? result : EXPIRED;
-    }
-
-    return result;
+    return checkResult(result, false);
   }
 
   async createData(data: ShortUrlDto) {

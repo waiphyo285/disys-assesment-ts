@@ -26,6 +26,19 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Database config
+
+```JS
+  {
+    type: 'mysql',
+    host: 'localhost',
+    port: 3306,
+    username: 'root',
+    password: '',
+    database: 'disys_assesment_ts'
+  }
+```
+
 ## Installation
 
 ```bash
@@ -48,14 +61,20 @@ $ npm run start:prod
 ## Test
 
 ```bash
-# unit tests
+# unit tests (unavailable)
 $ npm run test
 
-# e2e tests
+# e2e tests (available)
 $ npm run test:e2e
 
-# test coverage
+# test coverage (unavailable)
 $ npm run test:cov
+```
+
+## API Documentation
+
+```bash
+http://localhost:3000/api
 ```
 
 ## Support
